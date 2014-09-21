@@ -130,7 +130,12 @@ PostgresCompiler.prototype.visitContainsPredicate = function(contains) {
 
   this.filter.push(expr.join(' '));
 };
+
 PostgresCompiler.prototype.visitLikePredicate = function(like) {
+  if(like.isNegated) {
+    this.filter.push(' NOT ');
+  }
+
   var isParam = false;
 
   if(this.modelFieldMap[like.field]) {
