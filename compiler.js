@@ -109,13 +109,48 @@ PostgresCompiler.prototype.visitFilter = function(filterList) {
 };
 
 PostgresCompiler.prototype.visitContainsPredicate = function(contains) {
-  console.log(contains);
+  var isParam = false;
+
+  if(this.modelFieldMap[contains.field]) {
+    constains.field = this.modelFieldMap[contains.field];
+  }
+
+  if(typeof contains.value === 'string' && contains.value[0] === '@' && this.params) {
+    contains.value = this.params[contains.value.substring(1)];
+    isParam = true;
+  }
+
+  if(typeof contains.value === 'string') {
+    contains.value = normalizeString(contains.value, isParam);
+  }
+
+  var exprValue = contains.value;
+  exprValue = exprValue.substring(0, 1) + '%' + exprValue.substring(1, exprValue.length - 1) + '%' + exprValue.slice(-1);
+  var expr = [contains.field, 'LIKE', exprValue];
+
+  this.filter.push(expr.join(' '));
 };
 PostgresCompiler.prototype.visitLikePredicate = function(like) {
-  console.log(like);
+  var isParam = false;
+
+  if(this.modelFieldMap[like.field]) {
+    like.field = this.modelFieldMap[like.field];
+  }
+
+  if (typeof like.value === 'string' && like.value[0] === '@' && this.param) {
+    like.value = this.params[like.value.substring(1)];
+    isParam = true;
+  }
+
+  if (typeof like.value === 'string') {
+    like.value = normalizeString(like.value, isParam);
+  }
+
+  var expr = [like.field, 'LIKE', like.value];
+
+  this.filter.push(expr.join(' '));
 };
 PostgresCompiler.prototype.visitConjunction = function(conjunction) {
-  //console.log(conjunction);
   if(conjunction.isNegated) {
     this.filter.push(' NOT ');
   }
