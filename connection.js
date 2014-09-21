@@ -1,5 +1,10 @@
 var pg = require('pg');
+var types = pg.types;
 var Session = require('./session');
+
+types.setTypeParser(20, function(val) {
+  return val === null ? null : parseInt(val);
+});
 
 var PostgresConnection = module.exports = function(opts) {
   this.uri = opts.uri;
@@ -12,13 +17,13 @@ var PostgresConnection = module.exports = function(opts) {
 PostgresConnection.prototype.init = function(cb) {
   var self = this;
   var client = new pg.Client(this.uri);
-  client.connect(this.uri, function(err) {
+  client.connect(function(err) {
     if (err) {
       cb(err);
     }
 
     self.db = client;
-    cb(null, self.db);
+    cb(null, self);
   });
 };
 

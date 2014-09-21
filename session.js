@@ -8,6 +8,8 @@ function convertToModel(config, entity, isBare) {
     obj = Object.create(config.constructor.prototype);
     var keys = Object.keys(config.fieldMap || {});
     keys.forEach(function(key) {
+      var prop = config.fieldMap[key] || key;
+      obj[key] = prop;
     });
   }
 
@@ -20,12 +22,24 @@ var PostgresSession = module.exports = function(opts) {
 };
 
 PostgresSession.prototype.find = function(query, cb) {
+  var entities = [];
   if (query) {
+    var config = query.modelConfig;
     var compiler = new Compiler(this.cache);
     var compiled = compiler.compile({ query: query });
+    
 
-    this.db.query(compiled.statement, function(err, result) {
-
+    this.db.query(compiled.ql, function(err, result) {
+      if(err) {
+        cb(err);
+      } else {
+        var obj = {};
+        result.rows.forEach(function(row) {
+          var obj = convertToModel(config, row, config.isBare);
+          entities.push(obj);
+        });
+        cb(err, entities);
+      }
     });
   }
 };

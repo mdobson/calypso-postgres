@@ -25,8 +25,25 @@ PostgresCompiler.prototype.compile = function(options) {
   this.modelFieldMap = options.query.modelConfig.fieldMap;
   var config = options.query.modelConfig;
   var query = options.query.build();
-  var ast = caql.parse(options.ql);
-  ast.accept(this);
+
+  if(query.type === 'ast') {
+    query.value.accept(this);
+  } else if(query.type === 'ql') {
+    var ql = query.value.ql;
+    var ast;
+
+    if(this.cache.hasOwnProperty(ql)) {
+      ast = this.cache[ql];
+    } else {
+      ast = Parser.parse(query.value.ql);
+      this.cache[ql] = ast;
+    } 
+
+    this.params = query.value.params;
+    ast.accept(this);
+  } else if (query.type === 'raw') {
+    return query.value;
+  }
   
   var fieldMap = {};
   var fields = [];
@@ -60,7 +77,6 @@ PostgresCompiler.prototype.compile = function(options) {
     statement += ' ORDERBY ' + this.sorts;
   }
 
-  console.log(statement);
   return {
     ql: statement,
     fields: hasFields ? fields : null,
@@ -138,6 +154,4 @@ var normalizeString = function(str, isParam) {
   return str;
 };
 
-var pgc = new PostgresCompiler();
 
-pgc.compile({ ql: 'SELECT * WHERE ID = 1'});

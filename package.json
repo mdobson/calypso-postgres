@@ -1,0 +1,32 @@
+{
+  "name": "calypso-postgres",
+  "version": "0.0.0",
+  "description": "Calypso module for postgres",
+  "main": "compiler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdobson/calypso-postgres.git"
+  },
+  "keywords": [
+    "calypso",
+    "caql",
+    "pg",
+    "postgres"
+  ],
+  "author": "Matthew Dobson <@mdobs>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdobson/calypso-postgres/issues"
+  },
+  "homepage": "https://github.com/mdobson/calypso-postgres",
+  "dependencies": {
+    "caql": "^0.1.0",
+    "pg": "^3.4.4"
+  },
+  "devDependencies": {
+    "calypso": "^0.3.0"
+  }
+}
