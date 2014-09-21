@@ -9,7 +9,7 @@ function convertToModel(config, entity, isBare) {
     var keys = Object.keys(config.fieldMap || {});
     keys.forEach(function(key) {
       var prop = config.fieldMap[key] || key;
-      obj[key] = prop;
+      obj[key] = entity[prop];
     });
   }
 
