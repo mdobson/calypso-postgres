@@ -11,7 +11,7 @@ var engine = calypso.configure({
 engine.build(function(err, connection) {
   var session = connection.createSession();
 
-  var query = Query.of('foobar');
+  var query = Query.of('foobar').ql('select foo where bar > 2 and foo = "matt"');
 
   session.find(query, function(err, objs) {
     console.log(objs);

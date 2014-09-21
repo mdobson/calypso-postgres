@@ -35,7 +35,7 @@ PostgresCompiler.prototype.compile = function(options) {
     if(this.cache.hasOwnProperty(ql)) {
       ast = this.cache[ql];
     } else {
-      ast = Parser.parse(query.value.ql);
+      ast = caql.parse(query.value.ql);
       this.cache[ql] = ast;
     } 
 
@@ -108,6 +108,23 @@ PostgresCompiler.prototype.visitFilter = function(filterList) {
   filterList.expression.accept(this);
 };
 
+PostgresCompiler.prototype.visitContainsPredicate = function(contains) {
+  console.log(contains);
+};
+PostgresCompiler.prototype.visitLikePredicate = function(like) {
+  console.log(like);
+};
+PostgresCompiler.prototype.visitConjunction = function(conjunction) {
+  //console.log(conjunction);
+  if(conjunction.isNegated) {
+    this.filter.push(' NOT ');
+  }
+
+  conjunction.left.accept(this);
+  this.filter.push(' AND ');
+  conjunction.right.accept(this);
+};
+
 PostgresCompiler.prototype.visitComparisonPredicate = function(comparison) {
   if(!comparison.array) comparison.array = [];
 
@@ -138,6 +155,12 @@ PostgresCompiler.prototype.visitComparisonPredicate = function(comparison) {
 
 var normalizeString = function(str, isParam) {
   if (str[0] === '\'' && str[str.length - 1] === '\'') {
+    return str;
+  }
+
+  if (str[0] === '\"' && str[str.length - 1] === '\"') {
+    str = str.replace('\"', '\'');
+    str = str.replace('\"', '\'');
     return str;
   }
 

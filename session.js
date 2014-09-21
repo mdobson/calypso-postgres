@@ -27,8 +27,8 @@ PostgresSession.prototype.find = function(query, cb) {
     var config = query.modelConfig;
     var compiler = new Compiler(this.cache);
     var compiled = compiler.compile({ query: query });
-    
 
+    console.log(compiled.ql);
     this.db.query(compiled.ql, function(err, result) {
       if(err) {
         cb(err);
