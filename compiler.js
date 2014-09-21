@@ -174,7 +174,7 @@ PostgresCompiler.prototype.visitComparisonPredicate = function(comparison) {
 
   var isParam = false;
   if (typeof comparison.value === 'string' && comparison.value[0] === '@' && this.params) {
-    comparison.value = this.params[comparison.value.substringp(1)];
+    comparison.value = this.params[comparison.value.substring(1)];
     isParam = true;
   }
 

@@ -46,12 +46,15 @@ PostgresSession.prototype.find = function(query, cb) {
 
 PostgresSession.prototype.get = function(query, id, cb) {
   var config = query.modelConfig;
-  this.db.query(query, function(err, result) {
+  query.ql('where id = @id').params({ id: id});
+  var compiler = new Compiler(this.cache);
+  var compiled = compiler.compile({ query: query });
+  this.db.query(compiled.ql, function(err, result) {
     if(err) {
       cb(err);
     }
 
-    cb(result.rows[0]);
+    cb(null, result.rows[0]);
   });
 };
 

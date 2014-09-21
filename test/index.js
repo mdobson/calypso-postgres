@@ -11,11 +11,14 @@ var engine = calypso.configure({
 engine.build(function(err, connection) {
   var session = connection.createSession();
 
-  var query = Query.of('foobar').ql('select foo where foo contains "ma"');
+  //var query = Query.of('foobar').ql('select foo where foo contains "ma"');
 
   // var query = Query.of('foobar').where({ bar: 2 });
-  session.find(query, function(err, objs) {
+  /*session.find(query, function(err, objs) {
     console.log(objs);
+  });*/
+
+  session.get(Query.of('products'), 1, function(err, product) {
   });
 
 });
