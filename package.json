@@ -1,8 +1,8 @@
 {
   "name": "calypso-postgres",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Calypso module for postgres",
-  "main": "compiler.js",
+  "main": "driver.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
